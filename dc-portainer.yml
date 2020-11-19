@@ -17,3 +17,7 @@ services:
       - "traefik.docker.network=traefik-net"
 volumes:
   portainer_data:
+
+networks:
+  traefik-net:
+    external: true
