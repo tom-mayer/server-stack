@@ -1,0 +1,35 @@
+version: "3.3"
+
+services: 
+  db:
+    image: "mysql:5.7"
+    volumes:
+      - "db_data:/var/lib/mysql"
+      - "../data/sql_backup:/backups"
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PW}
+      MYSQL_DATABASE: ${WP_DB}
+      MYSQL_USER: ${WP_DB_USER}
+      MYSQL_PASSWORD: ${WP_DB_PW}
+  wordpress:
+    depends_on:
+      - db
+    image: "wordpress:latest"
+    labels:
+      - "traefik.http.routers.wordpress.rule=Host(`${WP_DOMAIN}`)" 
+      - "traefik.http.routers.wordpress.middlewares=auth"
+      - "traefik.http.routers.wordpress.tls.certresolver=le"
+      - "traefik.http.routers.wordpress.entrypoints=websecure"
+    restart: always
+    volumes:
+      - "wp_data:/var/www/html"
+      - "/server/data/wp_backup:/backups"
+    environment:
+      WORDPRESS_DB_HOST: db:3306
+      WORDPRESS_DB_USER: ${WP_DB_USER}
+      WORDPRESS_DB_PASSWORD: ${WP_DB_PW}
+      WORDPRESS_DB_NAME: ${WP_DB}
+volumes:
+  db_data:
+  wp_data: 
