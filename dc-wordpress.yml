@@ -7,6 +7,8 @@ services:
       - "db_data:/var/lib/mysql"
       - "../data/sql_backup:/backups"
     restart: always
+    networks:
+      - traefik-net
     environment:
       MYSQL_ROOT_PASSWORD: ${DB_ROOT_PW}
       MYSQL_DATABASE: ${WP_DB}
@@ -16,6 +18,8 @@ services:
     depends_on:
       - db
     image: "wordpress:latest"
+    networks:
+      - traefik-net
     labels:
       - "traefik.http.routers.wordpress.rule=Host(`${WP_DOMAIN}`)" 
       - "traefik.http.routers.wordpress.middlewares=auth"

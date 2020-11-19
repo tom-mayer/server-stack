@@ -10,14 +10,17 @@ services:
       - --providers.docker=true
       - --api
       - --certificatesresolvers.le.acme.email=${DOMAIN_EMAIL}
-      - --certificatesresolvers.le.acme.storage=/acme.json
+      - --certificatesresolvers.le.acme.storage=/certificates/acme.json
       - --certificatesresolvers.le.acme.tlschallenge=true
+      - --providers.docker.network=traefik-net
     ports:
       - "80:80"
       - "443:443"
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
-      - "../data/acme.json:/acme.json"
+      - "traefik_certs:/certificates"
+    networks:
+      - traefik-net
     labels:
       # Dashboard
       - "traefik.http.routers.traefik.rule=Host(`${TRAEFIK_DOMAIN}`)"
@@ -33,3 +36,9 @@ services:
       - "traefik.http.routers.redirs.rule=hostregexp(`{host:.+}`)"
       - "traefik.http.routers.redirs.entrypoints=web"
       - "traefik.http.routers.redirs.middlewares=redirect-to-https"
+volumes:
+  traefik_certs:
+
+networks:
+  traefik-net:
+    external: true
