@@ -27,7 +27,7 @@ services:
     restart: always
     volumes:
       - "wp_data:/var/www/html"
-      - "/server/data/wp_backup:/backups"
+      - "../data/wp_backup:/var/www/html/wp-content/updraft"
     environment:
       WORDPRESS_DB_HOST: db:3306
       WORDPRESS_DB_USER: ${WP_DB_USER}
