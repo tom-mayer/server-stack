@@ -22,7 +22,6 @@ services:
       - traefik-net
     labels:
       - "traefik.http.routers.wordpress.rule=Host(`${WP_DOMAIN}`)" 
-      - "traefik.http.routers.wordpress.middlewares=auth"
       - "traefik.http.routers.wordpress.tls.certresolver=le"
       - "traefik.http.routers.wordpress.entrypoints=websecure"
     restart: always
